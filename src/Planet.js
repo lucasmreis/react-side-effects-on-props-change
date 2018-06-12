@@ -18,32 +18,27 @@ export class Planet extends React.Component {
     }
   }
 
-  loadPlanet = id => {
-    axios("https://swapi.co/api/planets/" + id).then(res =>
-      this.setState({
-        loading: false,
-        planet: {
-          ...res.data,
-          id
-        }
-      })
-    );
+  loadPlanet = ({ planet, currentId }) => {
+    const planetId = planet && planet.id;
+    if (planetId !== currentId) {
+      axios("https://swapi.co/api/planets/" + currentId).then(res =>
+        this.setState({
+          loading: false,
+          planet: {
+            ...res.data,
+            id: currentId
+          }
+        })
+      );
+    }
   };
 
   componentDidUpdate() {
-    const { planet, currentId } = this.state;
-    const planetId = planet && planet.id;
-    if (planetId !== currentId) {
-      this.loadPlanet(currentId);
-    }
+    this.loadPlanet(this.state);
   }
 
   componentDidMount() {
-    const { planet, currentId } = this.state;
-    const planetId = planet && planet.id;
-    if (planetId !== currentId) {
-      this.loadPlanet(currentId);
-    }
+    this.loadPlanet(this.state);
   }
 
   render() {
